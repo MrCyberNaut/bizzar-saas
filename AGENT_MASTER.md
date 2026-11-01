@@ -33,7 +33,7 @@ D:\Projects\BizzAR-SaaS\
 | Repository | Path | Remote URL | Active Branch | Purpose & Status |
 |---|---|---|---|---|
 | **Root (Docs)** | `.` | `https://github.com/MrCyberNaut/bizzar-saas.git` | `master` | **ACTIVE**: Knowledge base, research corpus, agent memory, master documentation. |
-| **AR Engine** | `bizzar-proto/` | `https://github.com/MrCyberNaut/bizzar-proto.git` | `feat/mindar-ar-engine` | **CORE FOCUS**: R3F + MindAR runtime, WebGL preprocessing shaders, FFT phase correlation fallback, 3D glassmorphic panels. |
+| **AR Engine** | `bizzar-proto/` | `https://github.com/MrCyberNaut/bizzar-proto.git` | `feat/mindar-ar-engine` (`173398f`) | **CORE FOCUS**: Full-screen 100vh R3F + MindAR runtime, Apple-grade mobile HUD, 4-panel spatial experience (`CardExperience.tsx`), WebGL preprocessing shaders, FFT phase correlation fallback. |
 | **SaaS Platform** | `bizzar/` | `https://github.com/MrCyberNaut/bizzar.git` | `master` | **PARKED**: Full-stack Next.js 14 SaaS (Supabase, Stripe, 3D Hub Editor). Parked until AR tracking on cards is flawless. |
 
 > **IMPORTANT GIT RULE:** The root `.gitignore` ignores `bizzar/` and `bizzar-proto/`. Each sub-repository manages its own git history and remote. Always run `git -C bizzar <command>` or `git -C bizzar-proto <command>` when inspecting or committing within the sub-projects.
@@ -186,3 +186,4 @@ Our North Star right now is: **Make the AR business card experience look breatht
      3. Update `PROJECT_EXPLAINER.txt` and `PROJECT_EXPLAINER.html` for the user.
      4. Log session progress in `JOURNEY.md`.
      5. Commit and push changes to the relevant Git repository.
+

@@ -387,3 +387,22 @@ If we build it cleanly as a MindAR plugin, it's publishable.
 
 ### Research Saved
 Full details in knowledge/29-ar-engine-architecture-research.md
+
+---
+
+## Session 2026-11-01 — AR Full-Screen Immersion & Apple-Grade Spatial HUD
+
+### Progress This Session
+- **Full-Screen 100vh Viewport**: Dismantled the old 58vh/42vh debug split. `ARView` now fills the entire screen in native 100vh full-screen immersion.
+- **Apple-Grade Minimalist Mobile HUD**: Built a glassmorphic floating top bar with brand pill, live target status pill ("Align card within frame" -> "⚡ [Card] Locked"), front/back lens toggle, and collapsible diagnostic sheet toggle.
+- **Viewfinder Reticle**: Added a central card-proportional viewfinder with glowing corner brackets that automatically fades out once a card is locked.
+- **Dual-Pulse Haptic Feedback**: On anchor acquisition, fires `navigator.vibrate([35, 25, 35])` for physical confirmation.
+- **Collapsible Diagnostic Bottom Sheet**: Transformed the debug panel into a sleek slide-up drawer for FPS, 6-DoF pose readout, One-Euro filter profiles, glare shader, and CLAHE toggles.
+- **4-Panel Spatial Experience (`CardExperience.tsx`)**:
+  - `overlay`: Flush cyan/indigo scanning laser and glowing border (`CardOverlay`).
+  - `top`: Tilted glassmorphic identity panel with avatar, verified badge, name, title, and one-tap "+ Add to Contacts" vCard download.
+  - `left`: Angled glassmorphic wing with interactive social links (Twitter/X, LinkedIn, GitHub, Portfolio).
+  - `right`: Angled glassmorphic wing with bio overview and direct email/call actions.
+- **Scale Factor Calibration in `Panel.tsx`**: Implemented `DEFAULT_PANEL_SCALE = 0.0024` so standard CSS pixel dimensions (e.g. 380px) map accurately to Three.js units (0.91 units) relative to the 1.0-unit card.
+- **Modern Landing Page (`src/app/page.tsx`)**: Rebuilt the landing page with dark glassmorphism, instant AR launch CTA, interactive on-screen card target previews for desktop testing, and mobile QR code integration.
+- **Clean Builds Across Repos**: Verified production builds compile with 0 errors (`exit code 0`). All changes pushed to GitHub (`bizzar-proto: feat/mindar-ar-engine` and `bizzar-saas: master`).

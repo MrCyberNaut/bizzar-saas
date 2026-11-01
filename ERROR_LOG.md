@@ -9,6 +9,18 @@ Format per entry:
 
 ---
 
+## 2026-11-01 — Panel component scale prop mismatch in CardAnchor.tsx
+- **Error:** `Type error: Property 'scale' does not exist on type 'IntrinsicAttributes & PanelProps'.`
+- **Context:** Building bizzar-proto after updating Panel.tsx to use scaleFactor.
+- **Status:** fixed
+- **Fix:** Removed deprecated `scale={[...]}` array prop from Panel invocations in CardAnchor.tsx to match PanelProps interface.
+
+## 2026-11-01 — PhaseCorrelator method mismatch in ARScene.tsx
+- **Error:** `Type error: Property 'correlate' does not exist on type 'PhaseCorrelator'.`
+- **Context:** Building bizzar-proto after integrating full-screen AR scene and PhaseCorrelator fallback.
+- **Status:** fixed
+- **Fix:** Changed method call from `correlator.correlate(...)` to `correlator.estimate(videoEl, lastAnchorUV.current)` matching `PhaseCorrelator.estimate` interface.
+
 ## 2026-04-24 — 8th Wall replaced with MindAR.js
 - **Error:** 8th Wall cloud SDK is paid (free tier removed by Niantic). `NEXT_PUBLIC_8THWALL_KEY` required, no free access.
 - **Context:** Trying to run bizzar-proto AR engine

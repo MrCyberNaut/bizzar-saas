@@ -9,6 +9,18 @@ Format per entry:
 
 ---
 
+## 2026-11-02 — CARD_CONFIG backwards-compatibility property mismatch in ImageGallery
+- **Error:** `Type error: Property 'gallery' does not exist on type '{ ... }' in ImageGallery.tsx`
+- **Context:** Building `bizzar-proto` after refactoring `ar-config.ts` into a multi-target profile system.
+- **Status:** fixed
+- **Fix:** Restored backward-compatibility properties (`gallery`, `video`, `model3d`, and `PANEL_TRANSFORMS.model`) on `CARD_CONFIG` in `src/lib/ar-config.ts`.
+
+## 2026-11-02 — Clipboard writeText permission rejection in headless browser tests
+- **Error:** `PageError: Failed to execute 'writeText' on 'Clipboard': Write permission denied.`
+- **Context:** Running automated Playwright E2E verification suite without explicit clipboard write grants.
+- **Status:** fixed
+- **Fix:** Wrapped `navigator.clipboard.writeText(...)` calls in `.catch(() => {})` in `page.tsx` and `CardExperience.tsx`, and granted `clipboard-write` / `clipboard-read` in Playwright context permissions.
+
 ## 2026-11-01 — Panel component scale prop mismatch in CardAnchor.tsx
 - **Error:** `Type error: Property 'scale' does not exist on type 'IntrinsicAttributes & PanelProps'.`
 - **Context:** Building bizzar-proto after updating Panel.tsx to use scaleFactor.

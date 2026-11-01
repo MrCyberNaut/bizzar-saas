@@ -1,7 +1,7 @@
 # BizzAR — Master Agent Architecture & State File (AGENT_MASTER.md)
 > **FOR AGENTS ONLY: Antigravity & Claude Code**  
 > *This document is the single source of truth for all AI agents working on BizzAR. Update this file at the end of every work session.*  
-> **Last Synchronized:** 2026-11-01  
+> **Last Synchronized:** 2026-11-02  
 > **Repository Owner:** @MrCyberNaut (Arnav Sawant)  
 > **Current Focus:** Core AR Engine & Business Card Experience (SaaS Layer is Parked)
 
@@ -33,7 +33,7 @@ D:\Projects\BizzAR-SaaS\
 | Repository | Path | Remote URL | Active Branch | Purpose & Status |
 |---|---|---|---|---|
 | **Root (Docs)** | `.` | `https://github.com/MrCyberNaut/bizzar-saas.git` | `master` | **ACTIVE**: Knowledge base, research corpus, agent memory, master documentation. |
-| **AR Engine** | `bizzar-proto/` | `https://github.com/MrCyberNaut/bizzar-proto.git` | `feat/mindar-ar-engine` (`173398f`) | **CORE FOCUS**: Full-screen 100vh R3F + MindAR runtime, Apple-grade mobile HUD, 4-panel spatial experience (`CardExperience.tsx`), WebGL preprocessing shaders, FFT phase correlation fallback. |
+| **AR Engine** | `bizzar-proto/` | `https://github.com/MrCyberNaut/bizzar-proto.git` | `feat/mindar-ar-engine` (`a834385`) | **CORE FOCUS**: Full-screen 100vh R3F + MindAR runtime, modular Apple-grade mobile HUD (`ARHud.tsx`), diagnostic drawer (`ARDiagnosticsDrawer.tsx`), 4-panel spatial experience (`CardExperience.tsx`), WebGL preprocessing shaders, FFT phase correlation fallback. |
 | **SaaS Platform** | `bizzar/` | `https://github.com/MrCyberNaut/bizzar.git` | `master` | **PARKED**: Full-stack Next.js 14 SaaS (Supabase, Stripe, 3D Hub Editor). Parked until AR tracking on cards is flawless. |
 
 > **IMPORTANT GIT RULE:** The root `.gitignore` ignores `bizzar/` and `bizzar-proto/`. Each sub-repository manages its own git history and remote. Always run `git -C bizzar <command>` or `git -C bizzar-proto <command>` when inspecting or committing within the sub-projects.
@@ -184,18 +184,25 @@ Key takeaways from Reddit (r/augmentedreality), Twitter/X, and GitHub WebAR comm
 Our North Star right now is: **Make the AR business card experience look breathtaking, track effortlessly, and feel engineered like an Apple product.** The SaaS platform (auth, stripe, database) is deferred until this engine is production-grade.
 
 ### Sprint Checklist:
-1. **Engine Polish:**
+1. **Engine Polish & Modular Architecture:**
    - [x] WebGL camera preprocessing (glare reduction + contrast boost).
    - [x] CLAHE-lite local histogram normalization in fragment shader.
    - [x] Phase correlation tracking recovery via `fft.js`.
+   - [x] Modular HUD extraction (`ARHud.tsx`) and developer diagnostic drawer (`ARDiagnosticsDrawer.tsx`).
+   - [x] Streamlined scene coordinator (`ARScene.tsx`, down from 593 to ~270 lines).
+   - [x] Multi-target profile system (`ar-config.ts` supporting Cards 0, 1, 2).
    - [ ] Field validation on all 3 target cards across lighting environments.
    - [ ] Smooth spring transitions when switching from tracking to recovered state.
 2. **Product UI / UX:**
-   - [ ] Clean, hyper-aesthetic mobile launch UI (minimalist HUD, scan bracket guide, detection feedback).
-   - [ ] Haptic feedback (`navigator.vibrate`) on anchor acquisition.
-   - [ ] Mount active panel components (`Bio`, `Socials`, `GitHubGraph`) in 3D around the detected card.
-   - [ ] One-tap vCard contact save with visual success confirmation.
-3. **Future (SaaS Layer Re-activation):**
+   - [x] Clean, hyper-aesthetic mobile launch UI (minimalist HUD, scan bracket guide, detection feedback).
+   - [x] Haptic feedback (`navigator.vibrate`) on anchor acquisition.
+   - [x] Mount active panel components (`Bio`, `Socials`, `GitHubGraph`) in 3D around the detected card (`CardExperience.tsx`).
+   - [x] One-tap vCard contact save with haptics & visual confirmation.
+   - [x] Interactive landing page (`page.tsx`) with 3D mouse-tilt card preview and copy mobile link.
+3. **Automated Testing & Verification:**
+   - [x] Headless Microsoft Edge Playwright E2E suite (`scripts/test-e2e.js`) with WebGL and simulated card stream.
+   - [x] 100% pass across 4 test phases with **0 console errors**.
+4. **Future (SaaS Layer Re-activation):**
    - Connect Supabase card CRUD to dynamic `.mind` compilation and live R3F AR route.
 
 ---

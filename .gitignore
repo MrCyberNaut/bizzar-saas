@@ -36,5 +36,11 @@ next-env.d.ts
 
 # Graphify temp files
 graphify-out/.graphify_*
+graphify-out/cache/
+
+# Stale / build / local
+card.mind
+.playwright-mcp/
+
 bizzar/
 bizzar-proto/

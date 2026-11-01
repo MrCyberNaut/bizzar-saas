@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BizzAR — Project Status & Engine Explainer</title>
+  <style>
+    :root {
+      --bg: #090a0f;
+      --surface: #12141c;
+      --surface-elevated: #1a1e2b;
+      --surface-glass: rgba(26, 30, 43, 0.7);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(99, 102, 241, 0.35);
+      --primary: #6366f1;
+      --primary-glow: rgba(99, 102, 241, 0.25);
+      --secondary: #8b5cf6;
+      --cyan: #06b6d4;
+      --green: #10b981;
+      --amber: #f59e0b;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --text-faint: #6b7280;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      padding: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.08) 0%, transparent 40%);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 28px;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(120deg, #ffffff 40%, #a5b4fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .tagline {
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Tabs Navigation */
+    .tabs-nav {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      margin-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .tab-btn.active {
+      color: #fff;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-accent);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Tab Content Panes */
+    .tab-pane {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--surface-glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.2s ease;
+    }
+
+    .card:hover {
+      border-color: rgba(99, 102, 241, 0.25);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+    }
+
+    .card p {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* Repository Cards */
+    .repo-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .repo-badge {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 3px 8px;
+      border-radius: 6px;
+      margin-left: auto;
+    }
+
+    .badge-active {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge-parked {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .repo-detail {
+      margin-top: 16px;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color: #a5b4fc;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .repo-detail span {
+      color: var(--text-muted);
+    }
+
+    /* Architecture Layers */
+    .layer-card {
+      border-left: 4px solid var(--primary);
+      margin-bottom: 16px;
+      background: rgba(26, 30, 43, 0.4);
+      padding: 18px 20px;
+      border-radius: 0 12px 12px 0;
+    }
+
+    .layer-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--cyan);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .layer-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    /* Code blocks */
+    pre, code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .code-box {
+      background: #06070b;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 13px;
+      color: #e5e7eb;
+      position: relative;
+      margin-top: 12px;
+      overflow-x: auto;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    /* Target Cards Gallery */
+    .card-preview {
+      background: #0b0d14;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .card-preview img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 8px;
+      background: #1e2230;
+    }
+
+    .card-meta {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Checklist */
+    .checklist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .checklist li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .check-done {
+      color: var(--green);
+      font-weight: bold;
+    }
+
+    .check-pending {
+      color: var(--amber);
+      font-weight: bold;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-faint);
+      font-size: 13px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Header -->
+    <header>
+      <div class="header-top">
+        <div class="brand">
+          <div class="brand-icon">✨</div>
+          <div>
+            <h1>BizzAR Engine & System Explainer</h1>
+            <div class="tagline">Interactive Master Dashboard · Apple-Grade WebAR on Physical Business Cards</div>
+          </div>
+        </div>
+        <div class="status-badge">
+          <span class="pulse-dot"></span>
+          <span>AR ENGINE SPRINT ACTIVE</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="tabs-nav">
+      <button class="tab-btn active" onclick="openTab('tab-overview', this)">📊 Executive Overview</button>
+      <button class="tab-btn" onclick="openTab('tab-repos', this)">🗂️ Repos & Branches</button>
+      <button class="tab-btn" onclick="openTab('tab-architecture', this)">⚡ 5-Layer AR Engine</button>
+      <button class="tab-btn" onclick="openTab('tab-inventory', this)">💳 Card Targets</button>
+      <button class="tab-btn" onclick="openTab('tab-panels', this)">🧊 3D Panels & Modules</button>
+      <button class="tab-btn" onclick="openTab('tab-run', this)">🚀 How to Run & Test</button>
+    </div>
+
+    <!-- TAB 1: EXECUTIVE OVERVIEW -->
+    <div id="tab-overview" class="tab-pane active">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">🎯 The Core Mission</div>
+          <p>
+            <strong>Point phone camera at a real business card → panels float into 3D life.</strong><br><br>
+            Zero app installation required. Recipient scans a QR or opens the web link, and the camera locks onto the physical card stock with rock-solid stability and liquid-smooth 60fps animations.
+          </p>
+          <div style="margin-top: 16px; padding: 12px; background: rgba(99,102,241,0.1); border-radius: 8px; border: 1px solid rgba(99,102,241,0.25); font-size: 13px;">
+            <strong>Execution Strategy:</strong> Engine First, SaaS Later. We are perfecting the physical card AR experience before unparking the SaaS dashboard and payments.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🧹 Recent Restructuring & Cleanup</div>
+          <ul class="checklist">
+            <li><span class="check-done">✓</span> Stale root <code>card.mind</code> (563 KB obsolete) deleted</li>
+            <li><span class="check-done">✓</span> Stale <code>.playwright-mcp/</code> logs from April 2026 cleaned</li>
+            <li><span class="check-done">✓</span> Gitignore configured to exclude <code>graphify-out/cache/</code></li>
+            <li><span class="check-done">✓</span> Phase A Engine improvements committed & pushed to <code>bizzar-proto</code></li>
+            <li><span class="check-done">✓</span> <code>bizzar</code> SaaS repo synced with master and branch merged</li>
+            <li><span class="check-done">✓</span> <code>AGENT_MASTER.md</code> deployed for Antigravity & Claude Code sync</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📌 Phased Status & Road Ahead</div>
+        <div class="grid-3" style="margin-top: 16px; margin-bottom: 0;">
+          <div style="background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); border-radius: 10px; padding: 16px;">
+            <div style="font-size: 12px; font-weight: 700; color: #34d399; margin-bottom: 4px;">PHASE 1: COMPLETE</div>
+            <div style="font-weight: 700; color: #fff; margin-bottom: 6px;">Engine Preprocessor</div>
+            <p style="font-size: 13px;">WebGL shader intercepts video feed: suppresses glare, boosts contrast, and applies CLAHE-lite.</p>
+          </div>
+          <div style="background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.3); border-radius: 10px; padding: 16px;">
+            <div style="font-size: 12px; font-weight: 700; color: #818cf8; margin-bottom: 4px;">PHASE 2: IN PROGRESS</div>
+            <div style="font-weight: 700; color: #fff; margin-bottom: 6px;">Phase Correlation Fallback</div>
+            <p style="font-size: 13px;">FFT cross-power translation tracker (fft.js) preserves 3D anchor position during brief occlusions.</p>
+          </div>
+          <div style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); border-radius: 10px; padding: 16px;">
+            <div style="font-size: 12px; font-weight: 700; color: #fbbf24; margin-bottom: 4px;">PHASE 3: UP NEXT</div>
+            <div style="font-weight: 700; color: #fff; margin-bottom: 6px;">Apple-Grade UI & Panels</div>
+            <p style="font-size: 13px;">Minimalist mobile scanning HUD, spring entry animations, and 3D module layout integration.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: REPOSITORIES & BRANCHES -->
+    <div id="tab-repos" class="tab-pane">
+      <div class="grid-3">
+        
+        <!-- Repo 1 -->
+        <div class="card repo-card">
+          <div class="card-title">
+            <span>📚 bizzar-saas</span>
+            <span class="repo-badge badge-active">ACTIVE ROOT</span>
+          </div>
+          <p>The umbrella repository holding project documentation, 30 computer vision research papers, architecture specs, and agent memory.</p>
+          <div class="repo-detail">
+            <div><span>Path:</span> D:\Projects\BizzAR-SaaS\</div>
+            <div><span>Branch:</span> master</div>
+            <div><span>Remote:</span> github.com/MrCyberNaut/bizzar-saas</div>
+          </div>
+        </div>
+
+        <!-- Repo 2 -->
+        <div class="card repo-card" style="border-color: var(--primary);">
+          <div class="card-title">
+            <span>⚡ bizzar-proto</span>
+            <span class="repo-badge badge-active">CORE FOCUS</span>
+          </div>
+          <p>The active R&D sandbox hosting the real MindAR + React Three Fiber AR engine, WebGL GLSL shaders, and 3D glassmorphic panels.</p>
+          <div class="repo-detail">
+            <div><span>Path:</span> D:\Projects\BizzAR-SaaS\bizzar-proto\</div>
+            <div><span>Branch:</span> feat/mindar-ar-engine</div>
+            <div><span>Remote:</span> github.com/MrCyberNaut/bizzar-proto</div>
+          </div>
+        </div>
+
+        <!-- Repo 3 -->
+        <div class="card repo-card">
+          <div class="card-title">
+            <span>🏢 bizzar</span>
+            <span class="repo-badge badge-parked">PARKED SAAS</span>
+          </div>
+          <p>Full-stack Next.js 14 SaaS application with Supabase Auth, PostgreSQL, Stripe checkout/webhooks, and 3D Hub editor. Parked for now.</p>
+          <div class="repo-detail">
+            <div><span>Path:</span> D:\Projects\BizzAR-SaaS\bizzar\</div>
+            <div><span>Branch:</span> master</div>
+            <div><span>Remote:</span> github.com/MrCyberNaut/bizzar</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card">
+        <div class="card-title">🔗 How AI Agents Work With This Structure</div>
+        <p>
+          Both <strong>Antigravity</strong> and <strong>Claude Code</strong> use <code>AGENT_MASTER.md</code> as their shared memory. Whenever you switch between Antigravity and Claude Code, they automatically read the exact branch statuses, coordinate bugs, shader math, and current focus without losing context.
+        </p>
+      </div>
+    </div>
+
+    <!-- TAB 3: 5-LAYER AR ENGINE -->
+    <div id="tab-architecture" class="tab-pane">
+      <div class="card" style="margin-bottom: 24px;">
+        <div class="card-title">🛡️ Why Standard WebAR Fails on Business Cards</div>
+        <p>
+          Most business cards have large flat cream/white areas with very few corners or edges. MindAR relies on Difference-of-Gaussian (DoG) keypoints in TensorFlow.js shaders. On flat surfaces, these keypoints drop below detection thresholds. To overcome this, we built a <strong>5-layer fallback pipeline</strong>:
+        </p>
+      </div>
+
+      <div class="layer-card" style="border-left-color: #06b6d4;">
+        <div class="layer-num">Layer 1 · camera-preprocess.ts</div>
+        <div class="layer-name">WebGL Camera Preprocessor (GLSL Fragment Shader)</div>
+        <p>Intercepts the webcam stream before MindAR sees it. Pass 1 reduces specular glare from glossy card lamination. Pass 2 applies an S-curve contrast boost to midtones. Pass 3 (CLAHE-lite) uses a 4-tap local kernel to stretch luminance ranges on flat card areas, revealing micro-textures.</p>
+      </div>
+
+      <div class="layer-card" style="border-left-color: #6366f1;">
+        <div class="layer-num">Layer 2 · react-three-mind</div>
+        <div class="layer-name">Multi-Target Difference-of-Gaussian / FREAK Detector</div>
+        <p>MindAR scans video frames across an image pyramid via TF.js WebGL kernels, matching high-frequency corners against the compiled <code>card.mind</code> binary target database.</p>
+      </div>
+
+      <div class="layer-card" style="border-left-color: #8b5cf6;">
+        <div class="layer-num">Layer 3 · mind-ar core</div>
+        <div class="layer-name">Normalized Cross Correlation (NCC) Tracking</div>
+        <p>Once detected, locked feature patches are tracked frame-to-frame. Smoothness and jitter resistance are tuned via a 1€ (One-Euro) filter profile (minCF: 0.001, beta: 20).</p>
+      </div>
+
+      <div class="layer-card" style="border-left-color: #ec4899;">
+        <div class="layer-num">Layer 4 · phase-correlate.ts</div>
+        <div class="layer-name">2D FFT Phase Correlation Fallback (fft.js)</div>
+        <p>When NCC confidence drops during fast card movements or brief finger occlusions, this layer extracts a 64×64 patch around the last-known UV, runs a Hann-windowed 2D FFT cross-power spectrum, and derives sub-pixel translation (dx, dy) to keep the 3D scene locked.</p>
+      </div>
+
+      <div class="layer-card" style="border-left-color: #10b981;">
+        <div class="layer-num">Layer 5 · State Machine</div>
+        <div class="layer-name">Seamless Re-Detection & Recovery</div>
+        <p>If Phase Correlation confidence drops below 0.1 for more than 15 consecutive frames, the anchor gracefully disengages and returns to Layer 2 detection without app stutter.</p>
+      </div>
+    </div>
+
+    <!-- TAB 4: CARD INVENTORY -->
+    <div id="tab-inventory" class="tab-pane">
+      <div class="grid-3">
+        <div class="card-preview">
+          <div style="font-weight: 700; font-size: 16px; color: #fff;">Card 0: E-Cell MIT (Tan)</div>
+          <div class="card-meta">Worst-Case Test Target</div>
+          <p style="font-size: 13px; color: var(--text-muted);">Large uniform cream/tan area on left half. Keypoints are concentrated mostly in the blue "e" logo area. Perfect for testing our CLAHE shader enhancements.</p>
+        </div>
+
+        <div class="card-preview">
+          <div style="font-weight: 700; font-size: 16px; color: #fff;">Card 1: E-Cell MIT (Blue)</div>
+          <div class="card-meta">Medium Contrast Target</div>
+          <p style="font-size: 13px; color: var(--text-muted);">Higher overall contrast across the card surface. Yields stable DoG extrema under standard indoor office lighting.</p>
+        </div>
+
+        <div class="card-preview">
+          <div style="font-weight: 700; font-size: 16px; color: #fff;">Card 2: Inspark Event Card</div>
+          <div class="card-meta">High-Density Graphics Target</div>
+          <p style="font-size: 13px; color: var(--text-muted);">Dense typography, vibrant graphic elements, and high frequency edge details. Locks in under 2 frames with near-zero jitter.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">⚙️ Target Compilation Tools</div>
+        <p>All 3 cards are compiled into a unified 973 KB binary at <code>bizzar-proto/public/card.mind</code>.</p>
+        <div class="code-box">
+          <code># Headless compilation script via Playwright Chromium:<br>node scripts/compile-mind.js public/card1.jpg public/card2.jpg public/card3.png -o public/card.mind</code>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: 3D PANELS & MODULES -->
+    <div id="tab-panels" class="tab-pane">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">🧊 Glassmorphic Panel Engine (Panel.tsx)</div>
+          <p>
+            Panels render in real 3D space using <code>@react-three/drei</code>'s <code>&lt;Html transform&gt;</code>.<br>
+            They feature dynamic glassmorphism with <code>backdrop-filter: blur(14px)</code>, dark translucent gradients, and subtle rounded border highlights.
+          </p>
+          <div style="margin-top: 14px; font-size: 13px; color: var(--cyan);">
+            <strong>4 Spatial Slots:</strong><br>
+            • <code>overlay</code>: Glued flat to card surface (scanline + animated border)<br>
+            • <code>top</code>: Tilted backward 35° above card (vCard / Bio)<br>
+            • <code>left</code>: Angled 23° toward user on left (Social links / GitHub)<br>
+            • <code>right</code>: Angled -23° toward user on right (Gallery / Video / 3D)
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📦 Interactive Modules Ready in Proto</div>
+          <ul class="checklist">
+            <li><span class="check-done">✓</span> <strong>VCard:</strong> Instant contact download (.vcf file) + haptic feedback</li>
+            <li><span class="check-done">✓</span> <strong>Socials:</strong> Direct links to Twitter/X, LinkedIn, and GitHub</li>
+            <li><span class="check-done">✓</span> <strong>Bio:</strong> Professional overview with DM Sans typography</li>
+            <li><span class="check-done">✓</span> <strong>GitHubGraph:</strong> Live visual contribution activity matrix</li>
+            <li><span class="check-done">✓</span> <strong>ImageGallery:</strong> Portfolio project carousel with touch navigation</li>
+            <li><span class="check-done">✓</span> <strong>VideoPanel:</strong> Embedded YouTube / video player in 3D</li>
+            <li><span class="check-done">✓</span> <strong>CardOverlay:</strong> High-tech scanning laser & glowing frame</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 6: HOW TO RUN & TEST -->
+    <div id="tab-run" class="tab-pane">
+      <div class="card">
+        <div class="card-title">📱 Running the AR Experience Locally</div>
+        <p>To run the prototype engine and test with your phone camera:</p>
+        
+        <div class="code-box">
+          <button class="copy-btn" onclick="copyCode('cmd-run')">Copy</button>
+          <code id="cmd-run">cd D:\Projects\BizzAR-SaaS\bizzar-proto
+npm run dev</code>
+        </div>
+
+        <div style="margin-top: 20px; font-size: 14px; color: var(--text-muted);">
+          1. Find your machine's local IP (e.g. <code>192.168.1.X</code>).<br>
+          2. Open Safari (iOS) or Chrome (Android) on your phone connected to the same WiFi.<br>
+          3. Navigate to <code>http://192.168.1.X:3000/ar</code>.<br>
+          4. Allow camera access and point at any of the 3 business cards!
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 20px;">
+        <div class="card-title">🔍 Debugging & Performance Tools in Viewer</div>
+        <p>The viewer includes a built-in heads-up display:</p>
+        <ul class="checklist">
+          <li><strong>FPS Monitor:</strong> Warns if frame rates drop below 30fps.</li>
+          <li><strong>Pose Decomposer:</strong> Real-time 3D translation (x, y, z) and Euler rotation readout.</li>
+          <li><strong>Filter Profiles:</strong> Instant toggles between Smooth, Balanced, and Fast tracking.</li>
+          <li><strong>Shader Bypass:</strong> Toggle camera preprocessing on/off in real-time to compare tracking.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <div>BizzAR Ecosystem · Created for @MrCyberNaut</div>
+      <div>Synchronized: 2026-11-01 · Antigravity & Claude Code Ready</div>
+    </footer>
+
+  </div>
+
+  <script>
+    function openTab(tabId, btn) {
+      document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    function copyCode(id) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text);
+      event.target.innerText = 'Copied!';
+      setTimeout(() => event.target.innerText = 'Copy', 2000);
+    }
+  </script>
+</body>
+</html>

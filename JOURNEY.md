@@ -341,3 +341,49 @@ To properly build this engine and make it competitive, here is what would meanin
 ---
 
 *Keep updating this document. Every session should add at least one line to §10 and update any status changes in §3 and §9.*
+
+---
+
+## Session 2026-05-22 — Architecture Research + Multi-Card
+
+### Progress This Session
+- WebGL preprocessing pipeline (glare shader + getUserMedia intercept): DONE
+- AnchorContent X-flip fix (back vs front camera): DONE
+- Debug panel (FPS, pose, per-card found/lost counters): DONE
+- 3-card inventory: E-Cell tan [0], E-Cell blue [1], Inspark [2]: DONE
+- Headless .mind compiler (scripts/compile-mind.js via Playwright): DONE
+- 28 knowledge base files + bizzar-saas GitHub repo: DONE
+- Supabase restore: DONE (takes ~3-4 min on free tier)
+
+### Key Discovery: MindAR Uses SIFT/FREAK, Not ORB
+Mental model corrected. MindAR uses Difference-of-Gaussian + FREAK descriptor,
+all as custom TF.js WebGL GLSL kernels. No WASM. The detector is not weak —
+flat cards genuinely lack DoG extrema that survive the Laplacian threshold.
+
+### Architecture Decision: Solve for Any Card
+Rejected: requiring BizzAR-designed cards with embedded fiducials.
+Chosen: arbitrary card tracking with layered fallbacks.
+Rationale: "your existing card comes alive" is the product. Custom printing = different product.
+
+### The Layered Engine Architecture (to build)
+```
+[L1] CLAHE WebGL shader (extend camera-preprocess.ts)
+[L2] MindAR SIFT/FREAK initial lock
+[L3] NCC template tracking (MindAR built-in)
+[L4] FFT phase correlation fallback (WebFFT library)
+[L5] Re-detect from L2 if all else fails
+```
+Optional fast-path: js-aruco2 AprilTag for cards that embed a marker.
+
+### Novel Contribution Identified
+ArUco/AprilTag bootstrap → NFT handoff pattern is NOT publicly implemented.
+If we build it cleanly as a MindAR plugin, it's publishable.
+
+### Next Build Order
+1. CLAHE-lite WebGL in camera-preprocess.ts (extends existing shader)
+2. Phase correlation tracking layer via WebFFT
+3. (Optional) js-aruco2 fiducial fast-path
+4. Long-game: ALIKE-N via onnxruntime-web to replace SIFT detector
+
+### Research Saved
+Full details in knowledge/29-ar-engine-architecture-research.md

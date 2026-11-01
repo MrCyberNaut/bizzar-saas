@@ -18,8 +18,8 @@ Format per entry:
 ## 2026-04-24 — MindAR .mind compiler CLI fails on Node 24
 - **Error:** `node-pre-gyp ERR! not ok` — native bindings fail to compile on Node v24.14.1
 - **Context:** Trying to compile card1.jpg → card.mind via `npm install hiukim/mind-ar-js`
-- **Status:** open
-- **Fix:** Using browser-based compiler (compiler.html served at localhost:3002/compiler.html) as workaround.
+- **Status:** fixed
+- **Fix:** Built headless multi-target compiler script `scripts/compile-mind.js` using Playwright Chromium to drive the browser compiler automated without native Node bindings. Multi-target compilation for card1.jpg, card2.jpg, card3.png runs headlessly via `node scripts/compile-mind.js`.
 
 ## 2026-04-08 — drei Html distanceFactor bug with orthographic camera
 - **Error:** Module labels filled entire viewport — Html elements scaled to enormous size

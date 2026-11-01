@@ -1,0 +1,143 @@
+================================================================================
+                    BIZZAR — PROJECT STATUS & SYSTEM EXPLAINER
+================================================================================
+Owner: Arnav Sawant (@MrCyberNaut)
+Local Time: 2026-11-01
+Status: ACTIVE — RESTARTING CORE AR ENGINE SPRINTS
+Mission: Business Cards that come alive in AR (Apple-grade polish, 60fps tracking)
+Strategy: AR Card Experience First · SaaS Platform Comes Later
+================================================================================
+
+--------------------------------------------------------------------------------
+1. THE BIG PICTURE & REPOSITORIES (WHAT IS WHERE)
+--------------------------------------------------------------------------------
+The BizzAR ecosystem is organized into three distinct GitHub repositories
+housed together under `D:\Projects\BizzAR-SaaS`:
+
+1. ROOT REPOSITORY (bizzar-saas):
+   - Path: D:\Projects\BizzAR-SaaS\
+   - Git Remote: https://github.com/MrCyberNaut/bizzar-saas.git
+   - Active Branch: master
+   - What it holds:
+     * AGENT_MASTER.md       -> Master technical memory for Antigravity & Claude Code
+     * PROJECT_EXPLAINER.txt -> This file (human-readable text explainer)
+     * PROJECT_EXPLAINER.html-> Interactive visual dashboard for your browser
+     * CLAUDE.md             -> Agent instructions for Claude Code sessions
+     * JOURNEY.md            -> Chronological dev journey & bug tracking
+     * TODO.md               -> Phased engineering roadmap
+     * knowledge/            -> 30 computer vision & WebAR research papers (00 to 29)
+     * bizzar-design.md      -> Full SaaS product design spec
+
+2. AR ENGINE REPOSITORY (bizzar-proto) [ACTIVE FOCUS]:
+   - Path: D:\Projects\BizzAR-SaaS\bizzar-proto\
+   - Git Remote: https://github.com/MrCyberNaut/bizzar-proto.git
+   - Active Branch: feat/mindar-ar-engine (Up to date with origin)
+   - What it holds:
+     * React Three Fiber (R3F) + MindAR image tracking runtime
+     * WebGL Camera Preprocessor (glare reduction + midtone contrast + CLAHE shader)
+     * Phase Correlation fallback tracker (FFT translation tracking via fft.js)
+     * Multi-card inventory system (E-Cell tan, E-Cell blue, Inspark)
+     * 3D Glassmorphic Panel system (Overlay, Top, Left, Right)
+     * Interactive modules (vCard, Bio, Socials, GitHub Graph, Image Gallery, Video)
+     * Offline & headless .mind compilation tooling
+
+3. SAAS PLATFORM REPOSITORY (bizzar) [PARKED FOR NOW]:
+   - Path: D:\Projects\BizzAR-SaaS\bizzar\
+   - Git Remote: https://github.com/MrCyberNaut/bizzar.git
+   - Active Branch: master (Clean, latest merged PR #1)
+   - What it holds:
+     * Next.js 14 App Router, Supabase Auth & Database, Stripe payments
+     * 3D Hub isometric editor with drag-and-drop panel configuration
+     * Card management dashboard, QR generation, marketing pages
+   - Status: Parked safely. We will connect the AR engine into this once the AR
+     card experience tracks and feels 100% flawless.
+
+--------------------------------------------------------------------------------
+2. RECENT REPO CLEANUP & RESTRUCTURING ACTIONS
+--------------------------------------------------------------------------------
+[x] Deleted stale root `card.mind` (563 KB obsolete test file).
+[x] Deleted old `.playwright-mcp/` log/screenshot dump from April 2026.
+[x] Removed redundant `card.png` duplicate in `bizzar-proto/public`.
+[x] Configured `.gitignore` across root and `bizzar-proto` to ignore `graphify-out/cache/`
+    and `*.tsbuildinfo`, preventing thousands of temporary cache files from dirtying git.
+[x] Committed and pushed Phase A engine improvements in `bizzar-proto`:
+    - CLAHE-lite WebGL shader
+    - FFT phase correlation fallback & tracking recovery
+    - fft.js and playwright-chromium dependencies
+[x] Synchronized `bizzar` with remote `master` and deleted merged branch `feat/panel-click-fix`.
+[x] Created `AGENT_MASTER.md` to ensure Antigravity and Claude Code stay in 100% sync.
+[x] Verified `bizzar-proto` compiles with 0 errors (Next.js 14 production build verified).
+
+--------------------------------------------------------------------------------
+3. HOW THE AR ENGINE ACTUALLY WORKS (THE SECRET SAUCE)
+--------------------------------------------------------------------------------
+Standard AR engines fail on business cards because cards have large flat areas
+with low contrast. Our custom engine solves this using a 5-layer pipeline:
+
+   +--------------------------------------------------------------+
+   | Layer 1: WebGL Camera Preprocessing (camera-preprocess.ts)   |
+   | Intercepts video feed before MindAR sees it.                  |
+   | - Suppresses specular glare from glossy card lamination      |
+   | - Boosts midtone edge contrast                               |
+   | - CLAHE-lite: 4-tap local histogram stretch on flat regions  |
+   +------------------------------+-------------------------------+
+                                  |
+                                  v
+   +--------------------------------------------------------------+
+   | Layer 2: MindAR Difference-of-Gaussian / FREAK Detector      |
+   | Searches for scale-space corner extrema in TF.js shaders.     |
+   | Locks onto the compiled 3-card target binary (card.mind).    |
+   +------------------------------+-------------------------------+
+                                  |
+                                  v
+   +--------------------------------------------------------------+
+   | Layer 3: Normalized Cross Correlation (NCC) Tracking         |
+   | MindAR tracks locked patches frame-to-frame with One-Euro    |
+   | filter smoothing (minCF: 0.001, beta: 20).                   |
+   +------------------------------+-------------------------------+
+                                  |
+                                  v
+   +--------------------------------------------------------------+
+   | Layer 4: FFT Phase Correlation Fallback (phase-correlate.ts) |
+   | When MindAR loses tracking (brief occlusion or fast pan),     |
+   | runs 64x64 2D FFT cross-power translation recovery.          |
+   | Holds the 3D panels in place without dropping the AR scene!  |
+   +--------------------------------------------------------------+
+
+--------------------------------------------------------------------------------
+4. CURRENT 3-CARD TARGET INVENTORY
+--------------------------------------------------------------------------------
+Index 0: E-Cell MIT (tan)  -> File: /card1.jpg (Flat cream background, logo heavy)
+Index 1: E-Cell MIT (blue) -> File: /card2.jpg (High contrast blue card)
+Index 2: Inspark           -> File: /card3.png (Dense graphics, optimal target)
+
+Compiled Binary: `bizzar-proto/public/card.mind` (973 KB)
+
+--------------------------------------------------------------------------------
+5. HOW TO RUN & TEST RIGHT NOW
+--------------------------------------------------------------------------------
+1. Open terminal in `bizzar-proto`:
+   $ cd D:\Projects\BizzAR-SaaS\bizzar-proto
+   $ npm run dev
+
+2. On your computer or mobile phone (on local WiFi):
+   - Access: http://<YOUR_LOCAL_IP>:3000/ar
+   - Point your phone camera at any of the 3 business cards.
+   - Observe the live FPS, tracking status, and 3D contact card floating on it!
+
+--------------------------------------------------------------------------------
+6. NEXT IMMEDIATE MILESTONES (RESTARTING WORK)
+--------------------------------------------------------------------------------
+1. UI Polish: Build a breathtaking, minimalist mobile scanning HUD (scan frame,
+   haptic vibration on lock, animated detection ring).
+2. Panel Integration: Wire the existing 3D glassmorphic modules (Bio, Socials,
+   GitHub Graph) around the detected card in 3D space.
+3. Smooth Spring Physics: Add framer-motion-3d or spring interpolation so panels
+   float gracefully into view when the card is found.
+4. One-Tap Contact Saving: Ensure vCard (.vcf) download works seamlessly on both
+   iOS Safari and Android Chrome.
+
+Both `AGENT_MASTER.md` and this `PROJECT_EXPLAINER` file will keep updating
+as progress is made. You can also run Claude Code anytime — it will follow
+the same architecture and protocols.
+================================================================================

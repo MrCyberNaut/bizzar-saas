@@ -1,4 +1,6 @@
-# BizzAR — Project Instructions for Claude
+# BizzAR — Project Instructions for Claude Code & Agents
+
+> 🚨 **PRIMARY AGENT DIRECTIVE:** Read `AGENT_MASTER.md` before doing ANY work. It is the synchronized single source of truth for repository structure, branches, AR engine math, WebGL shaders, tracking pipelines, and active state.
 
 ## Model Tier Rules (MANDATORY)
 
@@ -10,18 +12,17 @@ Always use the right model for the task — applies to all subagents spawned:
 | Coding, implementation, debugging, file edits | **Sonnet** |
 | Writing logs, memory writes, file appends, rote output | **Haiku** |
 
-**Error Log:** Maintained at `d:/Projects/BizzAR-SaaS/ERROR_LOG.md`. Every error encountered must be logged. When fixed, update the entry with the fix. Use a Haiku subagent to write all log entries.
+**Error Log:** Maintained at `d:/Projects/BizzAR-SaaS/ERROR_LOG.md`. Every error encountered must be logged. When fixed, update the entry with the fix.
 
 ---
 
-## Strategy
+## Strategy & Current Focus
 
-**Build order:** Engine first (`bizzar-proto`), then SaaS layer (`bizzar`) on top.
-- `bizzar-proto` contains the working AR engine: R3F panels, 8th Wall image tracking, module components (vCard, Bio, Socials, GitHub graph, Image Gallery, 3D model)
-- Reuse proto's module components and panel transforms in the main SaaS editor + AR viewer
-- Do not duplicate AR logic — lift from proto, don't reinvent
-
-**Open source contributions:** While building, if we implement something novel or solve a non-trivial problem (e.g. R3F + 8th Wall raycasting fix, drei Html pointer-event passthrough, orthographic camera module overlays), flag it for potential open source contribution or blog post. Mention it in the response so Arnav can decide.
+**Current Goal:** Get the AR engine on physical business cards working with absolute excellence. The SaaS layer is parked.
+- **Active Engine Repo:** `bizzar-proto` (Next.js 14, React Three Fiber, MindAR, custom WebGL preprocessing shaders, FFT phase correlation fallback, glassmorphic 3D panels).
+- **Parked SaaS Repo:** `bizzar` (Next.js 14, Supabase, Stripe, DnD 3D Hub Editor).
+- **Master Agent Reference:** Always check and maintain `AGENT_MASTER.md`.
+- **User Explainer Files:** Maintain `PROJECT_EXPLAINER.txt` and `PROJECT_EXPLAINER.html` at session milestones.
 
 ---
 
@@ -29,9 +30,13 @@ Always use the right model for the task — applies to all subagents spawned:
 
 ```
 d:/Projects/BizzAR-SaaS/
-  bizzar/           ← Main SaaS app (Next.js 14, Supabase, Stripe)
-  bizzar-proto/     ← AR engine prototype (R3F + 8th Wall, hardcoded config)
-  bizzar-design.md  ← Full product design spec — READ THIS for context
+  AGENT_MASTER.md   ← Master technical truth across Antigravity & Claude Code
+  PROJECT_EXPLAINER.txt ← Plain-text project status for Arnav
+  PROJECT_EXPLAINER.html ← Interactive UI dashboard for Arnav
+  bizzar-proto/     ← AR engine prototype (R3F + MindAR, WebGL shaders, Phase Correlation) [ACTIVE FOCUS]
+  bizzar/           ← Main SaaS app (Next.js 14, Supabase, Stripe, 3D Editor) [PARKED]
+  knowledge/        ← 30 Computer Vision & WebAR research papers (00-29 + PDFs)
+  bizzar-design.md  ← Full product design spec
   bizzar-implementation-plan.md
 ```
 

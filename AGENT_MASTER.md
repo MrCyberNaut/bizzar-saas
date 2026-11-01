@@ -149,7 +149,37 @@ Located in `bizzar-proto/public/`:
 
 ---
 
-## 7. Immediate Roadmap: Getting Main AR Rock-Solid
+## 7. Playwright Automated Verification Suite
+
+Located in `bizzar-proto/scripts/test-e2e.js`:
+- **Execution:** `node scripts/test-e2e.js` (runs against active server on port 3000).
+- **Simulated Camera Feed:** Injects high-resolution business card canvas streams into `navigator.mediaDevices.getUserMedia` using Chromium/Edge flags (`--use-fake-ui-for-media-stream`, `--enable-webgl`).
+- **Verifications Covered:**
+  1. Landing page DOM mounting, brand typography, and interactive card target switching.
+  2. Full-screen AR HUD initialization, status pill, and reticle viewfinder.
+  3. MindAR TensorFlow shader compilation, 3-target pose tracking telemetry, and diagnostic drawer toggle.
+  4. Real-time console error interception (asserts 0 runtime exceptions).
+  5. Screenshots saved to `bizzar-proto/test-results/`.
+
+---
+
+## 8. WebAR Industry Intelligence (2026 Research Findings)
+
+Key takeaways from Reddit (r/augmentedreality), Twitter/X, and GitHub WebAR communities:
+1. **8th Wall Open-Source Monorepo (`github.com/8thwall/8thwall`):**
+   - Niantic transitioned 8th Wall into an open-source engine (`apps/image-target-cli`). However, it requires complex WASM packaging and lacks native React Three Fiber component bindings.
+2. **The WebXR Reality Gap (iOS Safari vs Android Chrome):**
+   - iOS Safari still **lacks native WebXR Device API support**. Standard WebXR image tracking cannot run in Safari without native App Clips or ARKit wrappers.
+   - Android Chrome only supports WebXR image tracking behind experimental incubation flags (`chrome://flags/#webxr-incubations`).
+   - **Conclusion:** Custom in-browser computer vision (MindAR + WebGL + Web Workers) remains the **only zero-install, friction-free solution** functional across both iOS Safari and Android Chrome today.
+3. **Business Card Jitter Physics & Solutions:**
+   - Physical cards are small (85mm × 54mm); at arm's length (30cm), they occupy few camera pixels.
+   - Minimalist business cards have low feature density, causing DoG extrema to fluctuate frame-to-frame.
+   - Our 3-part mitigation (One-Euro filter beta tuning + WebGL CLAHE-lite contrast boost + FFT Phase Correlation fallback) aligns with the cutting-edge recommendations from community developers.
+
+---
+
+## 9. Immediate Roadmap: Getting Main AR Rock-Solid
 
 Our North Star right now is: **Make the AR business card experience look breathtaking, track effortlessly, and feel engineered like an Apple product.** The SaaS platform (auth, stripe, database) is deferred until this engine is production-grade.
 

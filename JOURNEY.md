@@ -405,4 +405,9 @@ Full details in knowledge/29-ar-engine-architecture-research.md
   - `right`: Angled glassmorphic wing with bio overview and direct email/call actions.
 - **Scale Factor Calibration in `Panel.tsx`**: Implemented `DEFAULT_PANEL_SCALE = 0.0024` so standard CSS pixel dimensions (e.g. 380px) map accurately to Three.js units (0.91 units) relative to the 1.0-unit card.
 - **Modern Landing Page (`src/app/page.tsx`)**: Rebuilt the landing page with dark glassmorphism, instant AR launch CTA, interactive on-screen card target previews for desktop testing, and mobile QR code integration.
+- **Playwright Automated E2E Suite (`scripts/test-e2e.js`)**: Verified complete user journey in real headless browser with mocked camera video feed (feeding high-res `card3.png`). Tested landing page, target switching, AR HUD mounting, diagnostics drawer opening/closing, and 0 console errors. Verified mobile screenshots captured.
+- **2026 WebAR Competitive Intelligence Research**: Researched Reddit (r/augmentedreality), Twitter/X, and GitHub. Key insights:
+  - 8th Wall open-sourced at `github.com/8thwall/8thwall` (requires WASM / non-React runtime).
+  - iOS Safari still has zero native WebXR Device API support; Android Chrome requires experimental flags. MindAR in-browser WebGL remains the only cross-platform solution.
+  - Business card jitter physics confirmed: small physical size + minimalist layouts require local contrast boosting (CLAHE) + smoothing filters (One-Euro) + translation hold (Phase Correlation), matching our exact architecture.
 - **Clean Builds Across Repos**: Verified production builds compile with 0 errors (`exit code 0`). All changes pushed to GitHub (`bizzar-proto: feat/mindar-ar-engine` and `bizzar-saas: master`).
